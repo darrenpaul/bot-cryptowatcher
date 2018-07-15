@@ -6,7 +6,7 @@ import datetime
 from pprint import pprint
 from operator import itemgetter
 from collections import OrderedDict
-sys.path.append(r"C:\Users\darre\Documents\development\binance")
+sys.path.append(r"C:\dev\binance")
 import binance
 
 
@@ -72,6 +72,7 @@ class Watcher:
         print("Updated at {_time}".format(_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")))
         print("="*100)
         for key, val in data.items():
+            getattr(self.wallet, key).occurence += 1
             print("Trading pair: {pair}".format(pair=key))
             print("Change: {change}".format(change=val))
             print("Price: {start} -> {current}".format(start=getattr(self.wallet, key).startPrice, current=getattr(self.wallet, key).lastPrice))
@@ -99,7 +100,6 @@ class Currency:
         self.lastPrice = price
         _startPrice = float(self.startPrice)
         _currentPrice = float(self.lastPrice)
-        self.occurence += 1
         return str(get_percentage_change(new_value=_currentPrice, original_value=_startPrice))
 
 
