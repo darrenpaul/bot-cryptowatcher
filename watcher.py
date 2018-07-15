@@ -6,8 +6,9 @@ import datetime
 from pprint import pprint
 from operator import itemgetter
 from collections import OrderedDict
-sys.path.append(r"C:\dev\binance")
+sys.path.append(r"C:\Users\darre\Documents\development\binance")
 import binance
+
 
 class Watcher:
     def __init__(self):
@@ -22,7 +23,6 @@ class Watcher:
             self.wallet
             setattr(self.wallet, item["pair"], _obj)
             self.currencyObjects.append(_obj)
-
 
     def update_top_currencies(self):
         _data = {}
@@ -72,9 +72,10 @@ class Watcher:
         print("Updated at {_time}".format(_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")))
         print("="*100)
         for key, val in data.items():
-            print("pair: {pair}, price: {price}".format(pair=key, price=val))
-            print("start price: {price}".format(price=getattr(self.wallet, key).startPrice))
-            print("last price: {price}".format(price=getattr(self.wallet, key).lastPrice))
+            print("Trading pair: {pair}".format(pair=key))
+            print("Change: {change}".format(change=val))
+            print("Price: {start} -> {current}".format(start=getattr(self.wallet, key).startPrice, current=getattr(self.wallet, key).lastPrice))
+            print("Occurence: {occurence}".format(occurence=getattr(self.wallet, key).occurence))
             print("-"*100)
         print("="*100)
         print("\n")
@@ -92,16 +93,20 @@ class Currency:
         self.startPrice = start_price
         self.startTime = start_time
         self.lastPrice = ""
+        self.occurence = 0
 
     def check_price(self, price):
         self.lastPrice = price
         _startPrice = float(self.startPrice)
         _currentPrice = float(self.lastPrice)
+        self.occurence += 1
         return str(get_percentage_change(new_value=_currentPrice, original_value=_startPrice))
+
 
 class Wallet:
     def __init__(self):
         pass
+
 
 def get_difference(value1, value2):
     return float(value1) - float(value2)
