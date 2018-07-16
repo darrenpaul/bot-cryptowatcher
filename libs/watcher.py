@@ -16,6 +16,7 @@ class Watcher:
         self.wallet = wallet.Wallet()
         self.tradingPairs = self._get_trading_pairs()
         self.currencyObjects = []
+        self._pairs = []
         self.topCurrencies = {}
 
     def create_currency_objects(self):
@@ -26,6 +27,7 @@ class Watcher:
 
     def update_top_currencies(self):
         _data = {}
+        self._pairs = []
 
         for item in self._get_price_data():
             _pair = item["pair"]
@@ -44,6 +46,8 @@ class Watcher:
 
         for key, val in _data.items():
             self._format_top_items(base_currency=key, data=val)
+
+        self._update_currency_frequencies()
 
     def _pair_currencies(self, data):
         _data = {}
@@ -70,7 +74,7 @@ class Watcher:
 
     def display_top_currencies(self, base_currency, data):
         _ignores = ["BNB", "USDT"]
-        self._update_currency_frequencies(pairs=data.keys())
+        self._add_pairs(pairs=list(data.keys()))
 
         if base_currency not in _ignores:
             print("="*100)
@@ -91,9 +95,12 @@ class Watcher:
             print("="*100)
             print("\n")
 
-    def _update_currency_frequencies(self, pairs):
+    def _add_pairs(self, pairs):
+        self._pairs = self._pairs + pairs
+
+    def _update_currency_frequencies(self):
         for currency in self.currencyObjects:
-            if currency.pair not in pairs:
+            if currency.pair not in self._pairs:
                 currency.frequency = 0
 
     def _get_price_data(self):
