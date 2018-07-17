@@ -80,11 +80,14 @@ class Watcher:
             for key, val in data.items():
                 getattr(self.wallet, key).frequency += 1
                 getattr(self.wallet, key).totalFrequency += 1
+                _candle = binance.get_candle_stick(pair=key, interval="4h")["close"]
                 print("Trading pair: {pair}".format(pair=key))
-                print("Price Change: {change}".format(change=val))
+                print("Price Change: {change}%".format(change=val))
                 print("Price: {start} -> {current}".format(start=getattr(self.wallet, key).startPrice, current=getattr(self.wallet, key).lastPrice))
+                print("Highest Price: {price}".format(price=getattr(self.wallet, key).highestPrice))
+                print("Candle Close {cdl}".format(cdl=_candle))
                 print("Volume: {start} -> {current}".format(start=getattr(self.wallet, key).startVolume, current=getattr(self.wallet, key).lastVolume))
-                print("Volume Change: {change}".format(change=getattr(self.wallet, key).volumeChange))
+                print("Volume Change: {change}%".format(change=getattr(self.wallet, key).volumeChange))
                 print("Frequency: {freq}".format(freq=getattr(self.wallet, key).frequency))
                 print("Total Frequency: {freq}".format(freq=getattr(self.wallet, key).totalFrequency))
                 print("-"*100)
