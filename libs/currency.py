@@ -1,5 +1,6 @@
 from pprint import pprint
 
+
 class Currency:
     def __init__(self, currency_data):
         self.__set_attributes(data=currency_data)
@@ -8,6 +9,7 @@ class Currency:
         self.lastPrice = price
         _startPrice = float(self.startPrice)
         _currentPrice = float(self.lastPrice)
+        self._check_for_highest_price()
         return str(get_percentage_change(new_value=_currentPrice, original_value=_startPrice))
 
     def check_volume(self, volume):
@@ -16,11 +18,18 @@ class Currency:
         _currentVolume = float(self.lastVolume)
         self.volumeChange = str(get_percentage_change(new_value=_currentVolume, original_value=_startVolume))
 
+    def _check_for_highest_price(self):
+        _highestPrice = float(self.highestPrice)
+        _lastPrice = float(self.lastPrice)
+        if _lastPrice > _highestPrice:
+            self.highestPrice = str(_lastPrice)
+
     def __set_attributes(self, data):
         self.pair = data["pair"]
         self.startPrice = data["last"]
         self.startTime = data["time"]
         self.startVolume = data["volume"]
+        self.highestPrice = data["last"]
         self.lastPrice = None
         self.lastVolume = None
         self.volumeChange = None
