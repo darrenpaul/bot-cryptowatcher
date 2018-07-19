@@ -6,7 +6,7 @@ class Currency:
         self.__set_attributes(data=currency_data)
 
     def check_price(self, price):
-        self.lastPrice = price
+        self.lastPrice = str(price)
         _startPrice = float(self.startPrice)
         _currentPrice = float(self.lastPrice)
         self._check_for_highest_price()
@@ -26,10 +26,10 @@ class Currency:
 
     def __set_attributes(self, data):
         self.pair = data["pair"]
-        self.startPrice = data["last"]
+        self.startPrice = str(data["last"])
         self.startTime = data["time"]
-        self.startVolume = data["volume"]
-        self.highestPrice = data["last"]
+        self.startVolume = str(data["volume"])
+        self.highestPrice = str(data["last"])
         self.lastPrice = None
         self.lastVolume = None
         self.volumeChange = None

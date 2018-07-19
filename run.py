@@ -8,4 +8,4 @@ watcherObject.create_currency_objects()
 
 while _run is False:
     watcherObject.update_top_currencies()
-    sleep(300)
+    sleep(900)
