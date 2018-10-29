@@ -13,6 +13,7 @@ except ImportError:
     from PySide.QtGui import *
 
 from modules.binance import binance
+from modules.telegram import telegram
 
 # ROOTDIR = os.path.dirname(os.path.abspath(__file__))
 # sys.path.append(ROOTDIR.replace("{sep}environment".format(sep=os.sep), ""))
@@ -57,6 +58,11 @@ class Launcher(QMainWindow):
 class Widgets(QWidget):
     def __init__(self):
         super(Widgets, self).__init__()
+
+        # tbot = telegram.Telegram()
+        # tbot.bot_token = "749642635:AAGkkkoz1sQ8LyLY_K2n1Tk4vrDL26LmtRM"
+        # tbot.chat_id = "-263273886"
+        # tbot.send_message("working")
 
         self.watchers = []
 
