@@ -59,10 +59,9 @@ class Widgets(QWidget):
     def __init__(self):
         super(Widgets, self).__init__()
 
-        # tbot = telegram.Telegram()
-        # tbot.bot_token = "749642635:AAGkkkoz1sQ8LyLY_K2n1Tk4vrDL26LmtRM"
-        # tbot.chat_id = "-263273886"
-        # tbot.send_message("working")
+        self.tbot = telegram.Telegram()
+        self.tbot.bot_token = "749642635:AAGkkkoz1sQ8LyLY_K2n1Tk4vrDL26LmtRM"
+        self.tbot.chat_id = "-263273886"
 
         self.watchers = []
 
@@ -148,11 +147,30 @@ class Widgets(QWidget):
         rlayout.addWidget(rgreat)
         rgroup.setLayout(rlayout)
 
+        rNotifyGroup = QGroupBox("")
+        rNotifyGroup.setStyleSheet("QGroupBox{border: 0px;};")
+
+        rnotifyLayout = QHBoxLayout()
+        ronce = QRadioButton("Once")
+        ralways = QRadioButton("Always")
+        rnone = QRadioButton("None")
+
+        rnone.setChecked(True)
+        rnotifyLayout.addWidget(ronce)
+        rnotifyLayout.addWidget(ralways)
+        rnotifyLayout.addWidget(rnone)
+        rNotifyGroup.setLayout(rnotifyLayout)
+
+        bdeleteWatcher = QPushButton("Delete")
+        bdeleteWatcher.clicked.connect(lambda: self.__delete_watcher(watcherGroup))
+
         grid = QGridLayout()
         grid.addWidget(lpair, 2, 0)
         grid.addWidget(curPrice, 2, 1)
         grid.addWidget(watchPrice, 2, 2)
-        grid.addWidget(rgroup, 2, 3)
+        grid.addWidget(rgroup, 3, 3)
+        grid.addWidget(rNotifyGroup, 3, 4)
+        grid.addWidget(bdeleteWatcher, 3, 5)
 
         watcherGroup.setLayout(grid)
 
@@ -161,7 +179,9 @@ class Widgets(QWidget):
             "pair": lpair, 
             "uprice": watchPrice, 
             "cprice": curPrice,
-            "radios": {"less": rless, "equal": requal, "great": rgreat}
+            "radios": {"less": rless, "equal": requal, "great": rgreat},
+            "notify_type": "once",
+            "notify": True
             })
 
         self.grid.addWidget(watcherGroup, self.grid.rowCount(), 0)
@@ -181,13 +201,31 @@ class Widgets(QWidget):
             i.get("cprice").setText(self.__get_pair_price(_pair.replace("-", "")))
             cprice = float(i.get("cprice").text())
             uprice = float(i.get("uprice").text())
-            if i.get("radios").get("less").isChecked():
-                if cprice < uprice:
-                    print "less"
-            elif i.get("radios").get("great").isChecked():
-                if cprice > uprice:
-                    print "great"
-            
+            if i.get("notify"):
+                if i.get("notify_type"):
+                    i["notify"] = False
+
+                if i.get("radios").get("less").isChecked():
+                    if cprice < uprice:
+                        message = "{pair}\n{cprice} < {uprice}".format(pair=i.get("pair").text(), cprice=i.get("cprice").text(), uprice=i.get("uprice").text())
+                        self.tbot.send_message(message)
+                        print "less"
+                elif i.get("radios").get("great").isChecked():
+                    if cprice > uprice:
+                        message = "{pair}\n{cprice} < {uprice}".format(pair=i.get("pair").text(), cprice=i.get("cprice").text(), uprice=i.get("uprice").text())
+                        self.tbot.send_message(message)
+                        print "great"
+    
+    def __delete_watcher(self, group):
+        print self.watchers
+        _index = None
+        for i in self.watchers:
+            if i.get("group") is group:
+                _index = self.watchers.index(i)
+        
+        self.watchers.pop(_index)
+        print self.watchers
+        group.setParent(None)
 
 def main():
     app = QApplication([])
